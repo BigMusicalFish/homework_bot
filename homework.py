@@ -31,62 +31,70 @@ logger.addHandler(logging.StreamHandler())
 
 
 def check_tokens():
-    """Проверка доступности токенов и ID."""
+    '''Проверка доступности токенов и ID.'''
     return all([TELEGRAM_TOKEN, PRACTICUM_TOKEN, TELEGRAM_CHAT_ID])
 
 
 def send_message(bot, message):
-    """Отправляет сообщение в чат."""
+    '''Отправляет сообщение в чат.'''
     logger.info(f"Начало отправки сообщения: {message}")
     bot_message = bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
     if not bot_message:
-        raise telegram.TelegramError("Сообщение не отправлено")
+        raise telegram.TelegramError('Сообщение не отправлено')
     else:
-        logger.info(f"Сообщение отправлено: {message}")
+        logger.info(f'Сообщение отправлено: {message}')
 
 
 def get_api_answer(timestamp):
-    """Получить статус домашней работы из обновления."""
+    '''Получить статус домашней работы из обновления.'''
     cur_timestamp = timestamp or int(time.time())
     params = dict(url=ENDPOINT, headers=HEADERS,
                   params={"from_date": cur_timestamp})
     try:
         homework_statuses = requests.get(**params)
     except Exception as error:
-        logger.error(f"Ошибка при запросе к API: {error}")
+        logger.error(f'Ошибка при запросе к API: {error}')
     else:
         if homework_statuses.status_code != HTTPStatus.OK:
-            raise requests.HTTPError("HTTP запрос не успешен")
+            error_message = 'Статус страницы не равен 200'
+            raise requests.HTTPError(error_message)
         return homework_statuses.json()
 
 
 def check_response(response):
-    """Проверить валидность ответа."""
-    logger.info("Ответ от сервера получен")
+    '''Проверить валидность ответа.'''
+    logger.info('Ответ от сервера получен')
     homeworks_response = response['homeworks']
-    logger.info("Список домашних работ получен")
+    logger.info('Список домашних работ получен')
     if not homeworks_response:
-        raise LookupError("Отсутствует статус homeworks")
+        error_message = "Отсутствует статус homeworks"
+        raise LookupError(error_message)
     if not isinstance(homeworks_response, list):
-        raise TypeError("Невернй тип входящих данных")
+        error_message = 'Невернй тип входящих данных'
+        raise TypeError(error_message)
     if 'homeworks' not in response.keys():
-        raise KeyError('Ключ "homeworks" отсутствует')
+        error_message = 'Ключ "homeworks" отсутствует'
+        raise KeyError(error_message)
     if 'current_date' not in response.keys():
-        raise KeyError('Ключ "current_date" отсутствует в словаре')
+        error_message = 'Ключ "current_date" отсутствует в словаре'
+        raise KeyError(error_message)
     return homeworks_response
 
 
 def parse_status(homework):
-    """Получить статус домашней работы."""
-    homework_name = homework.get("homework_name")
-    homework_status = homework.get("status")
+    '''Получить статус домашней работы.'''
+    homework_name = homework.get('homework_name')
+    homework_status = homework.get('status')
     verdict = HOMEWORK_VERDICTS[homework_status]
     if not verdict:
-        raise KeyError("Cтатус отсутвует в словаре")
+        error_message = 'Cтатус отсутвует в словаре'
+        raise KeyError(error_message)
     if homework_status not in HOMEWORK_VERDICTS:
-        raise KeyError("Статус не существует")
+        error_message = 'Статус не существует'
+        raise KeyError(error_message)
     if "homework_name" not in homework:
-        raise KeyError("Домашняя работа не существует")
+        error_message = 'Домашняя работа не существует'
+        raise KeyError(error_message)
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
