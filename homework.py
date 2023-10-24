@@ -31,12 +31,12 @@ logger.addHandler(logging.StreamHandler())
 
 
 def check_tokens():
-    '''Проверка доступности токенов и ID.'''
+    """Проверка доступности токенов и ID."""
     return all([TELEGRAM_TOKEN, PRACTICUM_TOKEN, TELEGRAM_CHAT_ID])
 
 
 def send_message(bot, message):
-    '''Отправляет сообщение в чат.'''
+    """Отправляет сообщение в чат."""
     logger.info(f"Начало отправки сообщения: {message}")
     bot_message = bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
     if not bot_message:
@@ -46,7 +46,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(timestamp):
-    '''Получить статус домашней работы из обновления.'''
+    """Получить статус домашней работы из обновления."""
     cur_timestamp = timestamp or int(time.time())
     params = dict(url=ENDPOINT, headers=HEADERS,
                   params={"from_date": cur_timestamp})
@@ -62,7 +62,7 @@ def get_api_answer(timestamp):
 
 
 def check_response(response):
-    '''Проверить валидность ответа.'''
+    """Проверить валидность ответа."""
     logger.info('Ответ от сервера получен')
     homeworks_response = response['homeworks']
     logger.info('Список домашних работ получен')
@@ -82,7 +82,7 @@ def check_response(response):
 
 
 def parse_status(homework):
-    '''Получить статус домашней работы.'''
+    """Получить статус домашней работы."""
     homework_name = homework.get('homework_name')
     homework_status = homework.get('status')
     verdict = HOMEWORK_VERDICTS[homework_status]
