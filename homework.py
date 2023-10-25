@@ -83,18 +83,18 @@ def check_response(response):
 
 def parse_status(homework):
     """Получить статус домашней работы."""
-    homework_name = homework.get('homework_name')
-    homework_status = homework.get('status')
+    homework_name = homework.get("homework_name")
+    homework_status = homework.get("status")
     verdict = HOMEWORK_VERDICTS[homework_status]
     if not verdict:
-        error_message = 'Cтатус отсутвует в словаре'
-        raise KeyError(error_message)
+        message_verdict = "Такого статуса нет в словаре"
+        raise KeyError(message_verdict)
     if homework_status not in HOMEWORK_VERDICTS:
-        error_message = 'Статус не существует'
-        raise KeyError(error_message)
+        message_homework_status = "Такого статуса не существует"
+        raise KeyError(message_homework_status)
     if "homework_name" not in homework:
-        error_message = 'Домашняя работа не существует'
-        raise KeyError(error_message)
+        message_homework_name = "Такого имени не существует"
+        raise KeyError(message_homework_name)
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
