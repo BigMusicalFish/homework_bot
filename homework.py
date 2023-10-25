@@ -40,7 +40,8 @@ def send_message(bot, message):
     logger.info(f"Начало отправки сообщения: {message}")
     bot_message = bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
     if not bot_message:
-        raise telegram.TelegramError('Сообщение не отправлено')
+        error_message = 'Сообщение не отправлено'
+        raise telegram.TelegramError(error_message)
     else:
         logger.info(f'Сообщение отправлено: {message}')
 
