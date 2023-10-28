@@ -61,17 +61,14 @@ def get_api_answer(timestamp):
 
 def check_response(response):
     """Проверить валидность ответа."""
-    logger.info('Ответ от сервера получен')
-    logger.info('Список домашних работ получен')
-    if not response['homeworks']:
-        raise LookupError('Отсутствует статус homeworks')
-    if not isinstance(response['homeworks'], list):
-        raise TypeError('Невернй тип входящих данных')
-    if 'homeworks' not in response.keys():
-        raise KeyError('Ключ "homeworks" отсутствует')
-    if 'current_date' not in response.keys():
-        raise KeyError('Ключ "current_date" отсутствует в словаре')
-    return response['homeworks']
+    try:
+        homework = response['homeworks']
+    except KeyError as error:
+        logging.error(f'Ошибка доступа по ключу homeworks: {error}')
+    if not isinstance(homework, list):
+        logging.error('Homeworks не в виде списка')
+        raise TypeError('Homeworks не в виде списка')
+    return homework
 
 
 def parse_status(homework):
