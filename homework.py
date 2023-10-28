@@ -38,7 +38,7 @@ def send_message(bot, message):
     """Отправляет сообщение в чат."""
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
-        logger.info(f'Сообщение в чат {TELEGRAM_CHAT_ID}: {message}')
+        logger.debug(f'Сообщение в чат {TELEGRAM_CHAT_ID}: {message}')
     except Exception as error:
         raise SystemError('Ошибка отправки сообщения в Telegramm') from error
 
