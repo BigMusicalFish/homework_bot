@@ -36,12 +36,11 @@ def check_tokens():
 
 def send_message(bot, message):
     """Отправляет сообщение в чат."""
-    logger.info(f"Начало отправки сообщения: {message}")
-    bot_message = bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
-    if not bot_message:
-        raise telegram.TelegramError('Сообщение не отправлено')
-    else:
-        logger.info(f'Сообщение отправлено: {message}')
+    try:
+        bot.send_message(TELEGRAM_CHAT_ID, message)
+        logger.info(f'Сообщение в чат {TELEGRAM_CHAT_ID}: {message}')
+    except Exception as error:
+        raise SystemError('Ошибка отправки сообщения в Telegramm') from error
 
 
 def get_api_answer(timestamp):
