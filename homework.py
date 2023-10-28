@@ -73,15 +73,22 @@ def check_response(response):
 
 def parse_status(homework):
     """Получить статус домашней работы."""
-    homework_name = homework.get("homework_name")
-    homework_status = homework.get("status")
-    verdict = HOMEWORK_VERDICTS[homework_status]
-    if not verdict:
-        raise KeyError("Такого статуса нет в словаре")
-    if homework_status not in HOMEWORK_VERDICTS:
-        raise KeyError("Такого статуса не существует")
-    if "homework_name" not in homework:
-        raise KeyError("Такого имени не существует")
+    try:
+        homework_name = homework['homework_name']
+    except KeyError:
+        logging.error('Неверный ответ сервера')
+    homework_status = homework.get('status')
+    verdict = ''
+    if ((homework_status is None) or (
+        homework_status == '')) or ((
+            homework_status != 'approved') and (
+            homework_status != 'rejected')):
+        logging.error(f'Некорректный статус: {homework_status}')
+        raise KeyError(f'Некорректный статус: {homework_status}')
+    if homework_status == 'rejected':
+        verdict = HOMEWORK_VERDICTS['rejected']
+    elif homework_status == 'approved':
+        verdict = HOMEWORK_VERDICTS['approved']
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
