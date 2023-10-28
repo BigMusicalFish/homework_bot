@@ -73,22 +73,15 @@ def check_response(response):
 
 def parse_status(homework):
     """Получить статус домашней работы."""
-    try:
-        homework_name = homework['homework_name']
-    except KeyError:
-        logging.error('Неверный ответ сервера')
-    homework_status = homework.get('status')
-    verdict = ''
-    if ((homework_status is None) or (
-        homework_status == '')) or ((
-            homework_status != 'approved') and (
-            homework_status != 'rejected')):
-        logging.error(f'Некорректный статус: {homework_status}')
-        raise KeyError(f'Некорректный статус: {homework_status}')
-    if homework_status == 'rejected':
-        verdict = HOMEWORK_VERDICTS['rejected']
-    elif homework_status == 'approved':
-        verdict = HOMEWORK_VERDICTS['approved']
+    if 'homework_name' not in homework:
+        raise KeyError('Отсутствует ключ "homework_name" в ответе API')
+    if 'status' not in homework:
+        raise KeyError('Отсутствует ключ "status" в ответе API')
+    homework_name = homework['homework_name']
+    homework_status = homework['status']
+    if homework_status not in HOMEWORK_VERDICTS:
+        raise Exception(f'Неизвестный статус работы: {homework_status}')
+    verdict = HOMEWORK_VERDICTS[homework_status]
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
