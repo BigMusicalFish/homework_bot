@@ -40,7 +40,7 @@ def send_message(bot, message):
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logging.debug(f'Сообщение в чат {TELEGRAM_CHAT_ID}: {message}')
     except Exception as error:
-        raise SystemError('Ошибка отправки сообщения в Telegramm') from error
+        logging.error(f'Ошибка отправки сообщения в Telegramm: {error}')
 
 
 def get_api_answer(timestamp):
