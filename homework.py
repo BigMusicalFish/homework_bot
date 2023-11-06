@@ -36,9 +36,9 @@ def check_tokens():
 def send_message(bot, message):
     """Отправляет сообщение в чат."""
     try:
-        logger.debug(f"Начало отправки сообщения: {message}")
+        logging.debug(f"Начало отправки сообщения: {message}")
         bot.send_message(TELEGRAM_CHAT_ID, message)
-        logger.debug(f'Сообщение в чат {TELEGRAM_CHAT_ID}: {message}')
+        logging.debug(f'Сообщение в чат {TELEGRAM_CHAT_ID}: {message}')
     except Exception as error:
         raise SystemError('Ошибка отправки сообщения в Telegramm') from error
 
@@ -91,7 +91,7 @@ def parse_status(homework):
 def main():
     """Основная логика работы бота."""
     if not check_tokens():
-        logger.critical('Ошибка получения токенов')
+        logging.critical('Ошибка получения токенов')
         sys.exit()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
@@ -119,7 +119,7 @@ def main():
             logging.error(message)
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
-            logger.error(message)
+            logging.error(message)
         finally:
             time.sleep(RETRY_PERIOD)
 
