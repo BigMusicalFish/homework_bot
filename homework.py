@@ -65,9 +65,9 @@ def check_response(response):
         return exceptions.EmptyAnswerAPI('Ошибка доступа по '
                                          f'ключу homeworks: {error}')
     if not isinstance(response, dict):
-        return TypeError('Ошибка в типе ответа API')
+        raise TypeError('Ошибка в типе ответа API')
     if not isinstance(homeworks, list):
-        return TypeError('Homeworks не в виде списка')
+        raise TypeError('Homeworks не в виде списка')
     return homeworks
 
 
@@ -95,22 +95,22 @@ def main():
     current_report = {}
     prev_report = {}
     while True:
-        try:
-            response = get_api_answer(current_timestamp)
-            current_timestamp = response.get('current_data', current_timestamp)
-            new_homeworks = check_response(response)
-            if new_homeworks:
-                homework = new_homeworks[0]
-                current_report['name'] = homework.get('homework_name')
-                current_report['output'] = homework.get('status')
-            else:
-                current_report['output'] = 'Новые статусы отсутвуют.'
-            if current_report != prev_report:
-                send = f'{current_report["name"]}, {current_report["output"]}'
-                send_message(bot, send)
-                prev_report = current_report.copy()
-            else:
-                logging.debug('Статус не поменялся')
+        try: 
+            response = get_api_answer(current_timestamp) 
+            homework = check_response(response)[0] 
+            if homework: 
+                message = parse_status(homework) 
+                current_report[ 
+                    response.get("homework_name") 
+                ] = response.get("status") 
+                if current_report != prev_report: 
+                    send_message(bot, message) 
+                    prev_report = current_report.copy() 
+                    current_report[ 
+                        response.get("homework_name") 
+                    ] = response.get("status") 
+            current_timestamp = response.get("current_date")
+
         except exceptions.EmptyAnswerAPI as error:
             logging.error(f'Сбой в работе программы: {error}')
         except Exception as error:
