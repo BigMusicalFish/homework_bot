@@ -97,19 +97,20 @@ def main():
     while True:
         try:
             response = get_api_answer(current_timestamp)
-            homework = check_response(response)[0]
-            if homework:
+            current_timestamp = response.get('current_data', current_timestamp)
+            new_homeworks = check_response(response)
+            if new_homeworks:
+                homework = new_homeworks[0]
+                current_report['name'] = homework.get('homework_name')
+                current_report['output'] = homework.get('status')
+            else:
+                current_report['output'] = 'Новые статусы отсутвуют.'
+            if current_report != prev_report:
                 message = parse_status(homework)
-                current_report[
-                    response.get("homework_name")
-                ] = response.get("status")
-                if current_report != prev_report:
-                    send_message(bot, message)
-                    prev_report = current_report.copy()
-                    current_report[
-                        response.get("homework_name")
-                    ] = response.get("status")
-            current_timestamp = response.get("current_date")
+                send_message(bot, message)
+                prev_report = current_report.copy()
+            else:
+                logging.debug('Статус не поменялся')
 
         except exceptions.EmptyAnswerAPI as error:
             logging.error(f'Сбой в работе программы: {error}')
