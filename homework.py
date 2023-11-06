@@ -27,9 +27,6 @@ HOMEWORK_VERDICTS = {
     'rejected': 'Работа проверена: у ревьюера есть замечания.'
 }
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
-
 
 def check_tokens():
     """Проверка доступности токенов и ID."""
@@ -97,7 +94,7 @@ def main():
         logger.critical('Ошибка получения токенов')
         sys.exit()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    current_timestamp = int(time.time(0))
+    current_timestamp = int(time.time())
     current_report = {}
     prev_report = {}
     while True:
