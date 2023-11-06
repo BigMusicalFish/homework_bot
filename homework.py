@@ -65,9 +65,9 @@ def check_response(response):
         return exceptions.EmptyAnswerAPI('Ошибка доступа по '
                                          f'ключу homeworks: {error}')
     if not isinstance(response, dict):
-        raise TypeError('Ошибка в типе ответа API')
+        return TypeError('Ошибка в типе ответа API')
     if not isinstance(homeworks, list):
-        raise TypeError('Homeworks не в виде списка')
+        return TypeError('Homeworks не в виде списка')
     return homeworks
 
 
