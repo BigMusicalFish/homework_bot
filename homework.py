@@ -53,7 +53,7 @@ def get_api_answer(timestamp):
             'параметр = {params}'.format(**params))
         homework_statuses = requests.get(**params)
     except Exception as error:
-        raise requests.RequestException(f'Ошибка при запросе к API: {error}')
+        return requests.RequestException(f'Ошибка при запросе к API: {error}')
     else:
         if homework_statuses.status_code != HTTPStatus.OK:
             raise requests.HTTPError('Статус страницы не равен 200')
