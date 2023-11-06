@@ -45,12 +45,10 @@ def send_message(bot, message):
 
 def get_api_answer(timestamp):
     """Получить статус домашней работы из обновления."""
-    params = dict(url=ENDPOINT, headers=HEADERS,
-                  params={'from_date': timestamp})
+    params = {'url': ENDPOINT, 'headers': HEADERS,
+              'params': {'from_date': timestamp}}
     try:
-        logging.info(
-            'Попытка запроса: url = {url}, заголовок = {headers},'
-            'параметр = {params}'.format(**params))
+        logging.info('Запрос: {url}, {headers}, {params}'.format(**params))
         homework_statuses = requests.get(**params)
     except Exception as error:
         raise requests.RequestException(f'Ошибка при запросе к API: {error}')
