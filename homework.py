@@ -82,9 +82,13 @@ def parse_status(homework):
     homework_name = homework['homework_name']
     homework_status = homework['status']
     if homework_status not in HOMEWORK_VERDICTS:
-        raise ValueError(f'Неизвестный статус работы: {homework_status}')
-    verdict = HOMEWORK_VERDICTS[homework_status]
-    return f'Изменился статус проверки работы "{homework_name}". {verdict}'
+        raise ValueError(f'Неизвестный статус работы - {homework_status}')
+    return (
+        'Изменился статус проверки работы "{homework_name}" {verdict}'
+    ).format(
+        homework_name=homework_name,
+        verdict=HOMEWORK_VERDICTS[homework_status]
+    )
 
 
 def main():
@@ -94,11 +98,8 @@ def main():
         sys.exit()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
-    current_report = {
-        'name': '',
-        'output': ''
-    }
-    prev_report = current_report.copy()
+    current_report = {}
+    prev_report = {}
     while True:
         try:
             response = get_api_answer(current_timestamp)
