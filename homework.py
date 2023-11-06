@@ -62,8 +62,8 @@ def check_response(response):
     try:
         homeworks = response['homeworks']
     except KeyError as error:
-        return exceptions.EmptyAnswerAPI(f'Ошибка доступа по '
-                                        f'ключу homeworks: {error}')
+        return exceptions.EmptyAnswerAPI('Ошибка доступа по '
+                                         f'ключу homeworks: {error}')
     if not isinstance(response, dict):
         raise TypeError('Ошибка в типе ответа API')
     if not isinstance(homeworks, list):
