@@ -95,20 +95,20 @@ def main():
     current_report = {}
     prev_report = {}
     while True:
-        try: 
-            response = get_api_answer(current_timestamp) 
-            homework = check_response(response)[0] 
-            if homework: 
-                message = parse_status(homework) 
-                current_report[ 
-                    response.get("homework_name") 
-                ] = response.get("status") 
-                if current_report != prev_report: 
-                    send_message(bot, message) 
-                    prev_report = current_report.copy() 
-                    current_report[ 
-                        response.get("homework_name") 
-                    ] = response.get("status") 
+        try:
+            response = get_api_answer(current_timestamp)
+            homework = check_response(response)[0]
+            if homework:
+                message = parse_status(homework)
+                current_report[
+                    response.get("homework_name")
+                ] = response.get("status")
+                if current_report != prev_report:
+                    send_message(bot, message)
+                    prev_report = current_report.copy()
+                    current_report[
+                        response.get("homework_name")
+                    ] = response.get("status")
             current_timestamp = response.get("current_date")
 
         except exceptions.EmptyAnswerAPI as error:
