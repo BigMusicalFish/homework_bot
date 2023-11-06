@@ -48,8 +48,6 @@ def get_api_answer(timestamp):
     params = {'url': ENDPOINT, 'headers': HEADERS,
               'params': {'from_date': timestamp}}
     try:
-        logging.info('Начало запроса: url = {url},'
-                     'headers = {headers}, params = {params}'.format(**params))
         homework_statuses = requests.get(**params)
     except Exception as error:
         return requests.RequestException(f'Ошибка при запросе к API: {error}')
@@ -82,13 +80,9 @@ def parse_status(homework):
     homework_name = homework['homework_name']
     homework_status = homework['status']
     if homework_status not in HOMEWORK_VERDICTS:
-        raise ValueError(f'Неизвестный статус работы - {homework_status}')
-    return (
-        'Изменился статус проверки работы "{homework_name}" {verdict}'
-    ).format(
-        homework_name=homework_name,
-        verdict=HOMEWORK_VERDICTS[homework_status]
-    )
+        raise ValueError(f'Неизвестный статус работы: {homework_status}')
+    verdict = HOMEWORK_VERDICTS[homework_status]
+    return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
 def main():
