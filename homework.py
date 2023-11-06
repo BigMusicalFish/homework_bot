@@ -48,10 +48,9 @@ def get_api_answer(timestamp):
     params = {'url': ENDPOINT, 'headers': HEADERS,
               'params': {'from_date': timestamp}}
     try:
-        logging.info('Запрос: {url}, {headers}, {params}'.format(**params))
         homework_statuses = requests.get(**params)
     except Exception as error:
-        raise requests.RequestException(f'Ошибка при запросе к API: {error}')
+        return requests.RequestException(f'Ошибка при запросе к API: {error}')
     else:
         if homework_statuses.status_code != HTTPStatus.OK:
             raise requests.HTTPError('Статус страницы не равен 200')
@@ -63,7 +62,7 @@ def check_response(response):
     try:
         homeworks = response['homeworks']
     except KeyError as error:
-        raise exceptions.EmptyAnswerAPI(f'Ошибка доступа по '
+        return exceptions.EmptyAnswerAPI(f'Ошибка доступа по '
                                         f'ключу homeworks: {error}')
     if not isinstance(response, dict):
         raise TypeError('Ошибка в типе ответа API')
