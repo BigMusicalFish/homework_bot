@@ -48,6 +48,8 @@ def get_api_answer(timestamp):
     params = {'url': ENDPOINT, 'headers': HEADERS,
               'params': {'from_date': timestamp}}
     try:
+        logging.info('Начало запроса: url = {url},'
+                     'headers = {headers}, params = {params}'.format(**params))
         homework_statuses = requests.get(**params)
     except Exception as error:
         return requests.RequestException(f'Ошибка при запросе к API: {error}')
@@ -92,8 +94,11 @@ def main():
         sys.exit()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
-    current_report = {}
-    prev_report = {}
+    current_report = {
+        'name': '',
+        'output': ''
+    }
+    prev_report = current_report.copy()
     while True:
         try:
             response = get_api_answer(current_timestamp)
@@ -112,11 +117,9 @@ def main():
             else:
                 logging.debug('Статус не поменялся')
         except exceptions.EmptyAnswerAPI as error:
-            message = f'Сбой в работе программы: {error}'
-            logging.error(message)
+            logging.error(f'Сбой в работе программы: {error}')
         except Exception as error:
-            message = f'Сбой в работе программы: {error}'
-            logging.error(message)
+            logging.error(f'Сбой в работе программы: {error}')
         finally:
             time.sleep(RETRY_PERIOD)
 
