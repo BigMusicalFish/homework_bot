@@ -65,7 +65,7 @@ def check_response(response):
     """Проверить валидность ответа."""
     if not isinstance(response, dict):
         raise TypeError('Ошибка в типе ответа API')
-    if 'homework' not in response:
+    if 'homeworks' not in response:
         return exceptions.EmptyAnswerAPI('Ошибка доступа по '
                                          'ключу homeworks')
     homeworks = response['homeworks']
