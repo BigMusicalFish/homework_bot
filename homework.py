@@ -106,7 +106,7 @@ def main():
             if new_homeworks:
                 homework = new_homeworks[0]
                 current_report['name'] = homework.get('homework_name')
-                current_report['output'] = parse_status(homework)
+                current_report['output'] = homework.get('status')
             else:
                 current_report['output'] = 'Новые статусы отсутвуют.'
             if current_report != prev_report:
