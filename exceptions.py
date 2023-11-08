@@ -1,4 +1,4 @@
-class EmptyAnswerAPI(Exception):
+class EmptyAnswerAPI(KeyError):
     '''Обработка исключения при пустом ответе от API'''
 
     pass

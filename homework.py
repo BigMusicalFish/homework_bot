@@ -95,7 +95,7 @@ def main():
         logging.critical('Ошибка получения токенов')
         sys.exit()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    current_timestamp = 0
+    current_timestamp = int(time.time())
     current_report = {}
     prev_report = {}
     while True:
@@ -106,7 +106,7 @@ def main():
             if new_homeworks:
                 homework = new_homeworks[0]
                 current_report['name'] = homework.get('homework_name')
-                current_report['output'] = homework.get('status')
+                current_report['output'] = parse_status(homework)
             else:
                 current_report['output'] = 'Новые статусы отсутвуют.'
             if current_report != prev_report:
