@@ -2,13 +2,14 @@ import logging
 import os
 import sys
 import time
+from http import HTTPStatus
 
-import exceptions
 import telegram
 import requests
-
-from http import HTTPStatus
+from requests.exceptions import RequestException
 from dotenv import load_dotenv
+
+import exceptions
 
 load_dotenv()
 
@@ -48,12 +49,15 @@ def get_api_answer(timestamp):
     params = {'url': ENDPOINT, 'headers': HEADERS,
               'params': {'from_date': timestamp}}
     try:
+        logging.info(
+            'Начало запроса: url = {url}, headers = {headers},'
+            'params = {params}'.format(**params))
         homework_statuses = requests.get(**params)
-    except Exception as error:
-        return requests.RequestException(f'Ошибка при запросе к API: {error}')
+    except RequestException as error:
+        return exceptions.OrigExceptError(f'Ошибка при запросе к API: {error}')
     else:
         if homework_statuses.status_code != HTTPStatus.OK:
-            raise requests.HTTPError('Статус страницы не равен 200')
+            raise exceptions.OrigHTTPError('Статус страницы не равен 200')
         return homework_statuses.json()
 
 
@@ -91,7 +95,7 @@ def main():
         logging.critical('Ошибка получения токенов')
         sys.exit()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    current_timestamp = int(time.time())
+    current_timestamp = 0
     current_report = {}
     prev_report = {}
     while True:
@@ -102,7 +106,7 @@ def main():
             if new_homeworks:
                 homework = new_homeworks[0]
                 current_report['name'] = homework.get('homework_name')
-                current_report['output'] = homework.get('status')
+                current_report['output'] = parse_status(homework)
             else:
                 current_report['output'] = 'Новые статусы отсутвуют.'
             if current_report != prev_report:
