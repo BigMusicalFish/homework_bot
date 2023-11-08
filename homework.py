@@ -61,7 +61,7 @@ def get_api_answer(timestamp):
         return homework_statuses.json()
 
 
-def check_response(response): 
+def check_response(response):
     """Проверить валидность ответа."""
     if not isinstance(response, dict):
         raise TypeError('Ошибка в типе ответа API')
