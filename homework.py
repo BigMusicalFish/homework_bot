@@ -63,7 +63,7 @@ def get_api_answer(timestamp):
 
 def check_response(response): 
     """Проверить валидность ответа."""
-    if not isinstance(response, dict): 
+    if not isinstance(response, dict):
         raise TypeError('Ошибка в типе ответа API')
     if 'homeworks' not in response:
         raise exceptions.EmptyAnswerAPI('Ошибка доступа по '
