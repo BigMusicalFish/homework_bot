@@ -95,7 +95,7 @@ def main():
         logging.critical('Ошибка получения токенов')
         sys.exit()
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
-    current_timestamp = int(time.time())
+    current_timestamp = 0
     current_report = {}
     prev_report = {}
     while True:
