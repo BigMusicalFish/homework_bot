@@ -61,12 +61,13 @@ def get_api_answer(timestamp):
         return homework_statuses.json()
 
 
-def check_response(response):
+def check_response(response): 
     """Проверить валидность ответа."""
-    if not isinstance(response, dict):
+    if not isinstance(response, dict): 
         raise TypeError('Ошибка в типе ответа API')
     if 'homeworks' not in response:
-        return KeyError('Ошибка доступа по ключу homeworks')
+        raise exceptions.EmptyAnswerAPI('Ошибка доступа по '
+                                        'ключу homeworks.')
     homeworks = response['homeworks']
     if not isinstance(homeworks, list):
         raise TypeError('Homeworks не в виде списка')
