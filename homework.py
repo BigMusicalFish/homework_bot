@@ -54,7 +54,7 @@ def get_api_answer(timestamp):
             'params = {params}'.format(**params))
         homework_statuses = requests.get(**params)
     except RequestException as error:
-        return exceptions.OrigExceptError(f'Ошибка при запросе к API: {error}')
+        raise exceptions.OrigExceptError(f'Ошибка при запросе к API: {error}')
     else:
         if homework_statuses.status_code != HTTPStatus.OK:
             raise exceptions.OrigHTTPError('Статус страницы не равен 200')
@@ -109,16 +109,19 @@ def main():
             else:
                 current_report['output'] = 'Новые статусы отсутвуют.'
             if current_report != prev_report:
-                message = parse_status(homework)
+                message = current_report['output']
                 send_message(bot, message)
                 prev_report = current_report.copy()
             else:
                 logging.debug('Статус не поменялся')
-
         except exceptions.EmptyAnswerAPI as error:
             logging.error(f'Сбой в работе программы: {error}')
         except Exception as error:
             logging.error(f'Сбой в работе программы: {error}')
+            current_report['output'] = error
+            if current_report != prev_report:
+                send_message(bot, message)
+                prev_report = current_report.copy()
         finally:
             time.sleep(RETRY_PERIOD)
 
